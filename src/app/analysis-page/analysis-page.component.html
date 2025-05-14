@@ -1,0 +1,58 @@
+<div class="analysis-container">
+    <div class="filters-section">
+        <div class="filter-group">
+            <label class="filter-label">IDs:</label>
+            <mat-form-field class="full-width">
+                <mat-select [multiple]="true" [(ngModel)]="selectedIds" multiple (ngModelChange)="onFilterChange()">
+                    @for (trainee of allTrainees; track trainee.id) {
+                    <mat-option [value]="trainee.id">
+                        {{trainee.id}} - {{trainee.name}}
+                    </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label">Subjects:</label>
+            <mat-form-field class="full-width">
+                <mat-select [(ngModel)]="selectedSubjects" multiple (ngModelChange)="onFilterChange()">
+                    @for (subject of uniqueSubjects; track subject) {
+                    <mat-option [value]="subject">{{subject}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="charts-container">
+        <div class="charts-grid" id="visible-charts" cdkDropList #visibleDropList="cdkDropList"
+            [cdkDropListData]="visibleCharts" [cdkDropListConnectedTo]="['hidden-chart']"
+            (cdkDropListDropped)="onChartDrop($event)">
+            <div class="chart-box" *ngFor="let chart of visibleCharts; let i = index" cdkDrag [cdkDragData]="chart">
+                <div class="chart-content">
+                    <h3>Chart {{chart.id}}: {{chart.title}}</h3>
+                    <ng-container [ngSwitch]="chart.id">
+                        <ngx-charts-bar-vertical *ngSwitchCase="1" [results]="chart.data" [gradient]="true"
+                            [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true" [showYAxisLabel]="true"
+                            xAxisLabel="Trainee" yAxisLabel="Grade"></ngx-charts-bar-vertical>
+                        <ngx-charts-line-chart *ngSwitchCase="2" [results]="chart.data" [gradient]="true" [xAxis]="true"
+                            [yAxis]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" xAxisLabel="Date"
+                            yAxisLabel="Grade"></ngx-charts-line-chart>
+                        <ngx-charts-pie-chart *ngSwitchCase="3" [results]="chart.data" [gradient]="true"
+                            [labels]="true"></ngx-charts-pie-chart>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+
+        <div class="hidden-chart" id="hidden-chart" cdkDropList [cdkDropListData]="[hiddenChart]"
+            [cdkDropListConnectedTo]="['visible-charts']" (cdkDropListDropped)="onChartDrop($event)">
+            <div *ngIf="hiddenChart" class="chart-preview" cdkDrag [cdkDragData]="hiddenChart">
+                <div class="chart-content">
+                    <h3>Chart {{hiddenChart.id}}: {{hiddenChart.title}}</h3>
+                    <mat-icon cdkDragHandle>drag_indicator</mat-icon>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

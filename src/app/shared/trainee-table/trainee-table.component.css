@@ -1,0 +1,14 @@
+table {
+    width: 100%;
+  }
+  
+  tr.selected {
+    background-color: #e0f7fa;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  

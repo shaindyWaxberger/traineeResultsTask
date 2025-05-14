@@ -1,0 +1,71 @@
+<div class="container">
+    <div class="main-content">
+        <div class="controls-container d-flex align-items-center mt-4">
+            <div class="filter-container">
+                <span class="filter-label">Filter:</span>
+                <mat-form-field class="filter-field">
+                    <input matInput [(ngModel)]="filterText" (ngModelChange)="onFilterChange($event)">
+                </mat-form-field>
+            </div>
+
+            <div class="buttons-container p-4">
+                <button mat-raised-button color="primary" (click)="onAdd()">Add</button>
+                <button mat-raised-button color="warn" (click)="onRemove()"
+                    [disabled]="!selectedTrainee">Remove</button>
+            </div>
+        </div>
+
+        <app-trainee-table [data]="paginatedResults" [selectedId]="selectedTrainee?.id"
+            (rowSelected)="onRowSelected($event)">
+        </app-trainee-table>
+
+        <div class="pagination">
+            <button mat-button [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">
+                Prev
+            </button>
+
+            <button mat-button *ngFor="let page of getPageNumbers()" [class.active]="page === currentPage"
+                (click)="onPageChange(page)">
+                {{page}}
+            </button>
+
+            <button mat-button [disabled]="currentPage === totalPages" (click)="onPageChange(currentPage + 1)">
+                Next
+            </button>
+
+            <span class="pagination-info">
+                Showing {{((currentPage - 1) * pageSize) + 1}} -
+                {{Math.min(currentPage * pageSize, filteredResults.length)}}
+                of {{filteredResults.length}} results
+            </span>
+        </div>
+    </div>
+
+    <div class="details-panel" *ngIf="selectedTrainee">
+        <h2>Details</h2>
+        <form (ngSubmit)="onSave(selectedTrainee)" #form="ngForm">
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput [(ngModel)]="selectedTrainee.name" name="name" required>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Subject</mat-label>
+                <input matInput [(ngModel)]="selectedTrainee.subject" name="subject" required>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Grade</mat-label>
+                <input matInput type="number" [(ngModel)]="selectedTrainee.grade" name="grade" required min="0"
+                    max="100">
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Date</mat-label>
+                <input matInput [matDatepicker]="picker" [(ngModel)]="selectedTrainee.date" name="date" required>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            <div class="button-group">
+                <button mat-raised-button color="primary" type="submit">Save</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,61 @@
+<div class="monitor-container">
+    <div class="filters">
+      <div class="filter-group">
+        <label class="filter-label">IDs:</label>
+      <mat-form-field class="full-width">
+        <mat-select [(ngModel)]="selectedIds" multiple (selectionChange)="onFilterChange()">
+          @for (trainee of allTrainees; track trainee.id) {
+            <mat-option [value]="trainee.id">
+              {{trainee.id}} - {{trainee.name}}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+  </div>
+  <div class="filter-group">
+    <label class="filter-label">Names:</label>
+      <mat-form-field class="full-width">
+       
+        <input matInput [(ngModel)]="nameFilter" (ngModelChange)="onFilterChange()">
+      </mat-form-field>
+  </div>
+      <div class="status-filters">
+        <mat-checkbox [(ngModel)]="showPassed" (change)="onFilterChange()">
+          Passed
+        </mat-checkbox>
+        <mat-checkbox [(ngModel)]="showFailed" (change)="onFilterChange()">
+          Failed
+        </mat-checkbox>
+      </div>
+    </div>
+    
+    <table mat-table [dataSource]="filteredTrainees" class="mat-elevation-z8">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> ID </th>
+        <td mat-cell *matCellDef="let trainee"> {{trainee.id}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let trainee"> {{trainee.name}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="averageGrade">
+        <th mat-header-cell *matHeaderCellDef> Average Grade </th>
+        <td mat-cell *matCellDef="let trainee"> {{trainee.averageGrade}} </td>
+      </ng-container>
+      <ng-container matColumnDef="exams">
+        <th mat-header-cell *matHeaderCellDef> Exams </th>
+        <td mat-cell *matCellDef="let trainee">
+          {{trainee.exams}}
+        </td>
+      </ng-container>
+    
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+          [class.passed]="row.status === 'Passed'"
+          [class.failed]="row.status === 'Failed'">
+      </tr>
+    </table>
+  </div>
